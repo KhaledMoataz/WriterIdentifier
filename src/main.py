@@ -26,12 +26,12 @@ img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()
 cv2.imshow('Original Image', img)
-feature_extractor = FeatureExtractor.FeatureExtractor()
+feature_extractor = FeatureExtractor.FeatureExtractor(2)
 
 start = timeit.default_timer()
 
 
-mask, normal_mask = feature_extractor.getLBP(img, 1)
+normal_mask, mask = feature_extractor.getLBP(img, 1)
 
 stop = timeit.default_timer()
 

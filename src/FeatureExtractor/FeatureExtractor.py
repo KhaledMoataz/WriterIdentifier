@@ -3,10 +3,20 @@ import cv2
 
 
 class FeatureExtractor:
-    def __init__(self):
-        pass
+    def __init__(self, maxRadius):
+        """
+        Initializes the feature extractor with max number of radii
+        :param maxRadius: Number of radii to take consider while generating SRS-LBP
+        """
+        self.R = maxRadius
 
     def getLBP(self, image, radius):
+        """
+        Generates normal LBP and SRS-LBP for a certain radius
+        :param image: The image to compute LBP for.
+        :param radius: The radius of the neighboring pixels.
+        :return: normal_mask: normal LBP output image, mask: SRS-LBP output image
+        """
         dx = np.array([-radius, -radius, -radius, 0, 0, radius, radius, radius])
         dy = np.array([-radius, 0, radius, -radius, radius, -radius, 0, radius])
 
@@ -50,7 +60,28 @@ class FeatureExtractor:
         for i in range(8):
             mask += np.array((abs_diff_images[:, :, i] >= threshold) * (1 << i), dtype=np.uint8)
             normal_mask += np.array((diff_images[:, :, i] >= 0) * (1 << i), dtype=np.uint8)
-        return mask, normal_mask
+        return normal_mask, mask
+
+    def getSRSImages(self, image):
+        """
+        Generates SRS-LBP Images for radii from 1 to maxRadius
+        :param image: The image to generate SRS-LBP for.
+        :return: Array of SRS-LBP Images with different radii
+        """
+        SRS_masks = []
+        for i in range(1, self.R+1):
+            _, mask = self.getLBP(image, i)
+            SRS_masks.append(mask)
+        return SRS_masks
 
     def extractFeatures(self, image):
-        pass
+        """
+        Generates a feature vector for a given image.
+        :param image: The image to extract features from.
+        :return: A feature vector representing the image.
+        """
+        SRS_masks = self.getSRSImages(image)
+        # TODO: Compute histogram, apply L1 Normalization, .. etc.
+
+
+
