@@ -191,25 +191,26 @@ def testForms(directory):
 #testPreProcessing()
 
 #testForms('../data/formsA-D/')
+#testForms('../data/formsE-H/')
+#testForms('../data/formsI-Z/')
+
 #image,x,lines = debugPreProcessor('../data/formsA-D/a03-089.png')
 #image,x,lines = debugPreProcessor('../data/formsA-D/d06-063.png')
 #image,x,lines = debugPreProcessor('../data/formsA-D/b03-109.png')
 #image,x,lines = debugPreProcessor('../data/formsA-D/a06-157.png')
 #image,x,lines = debugPreProcessor('../data/formsA-D/b04-208.png')
-
-#testForms('../data/formsE-H/')
 #image,x,lines = debugPreProcessor('../data/formsE-H/g04-108.png')
 #image,x,lines = debugPreProcessor('../data/formsE-H/h07-087.png')
-#image,x,lines = debugPreProcessor('../data/formsE-H/h02-037.png')
-
-#testForms('../data/formsI-Z/')
-#image,x,lines = debugPreProcessor('../data/formsI-Z/p02-109.png')
 #image,x,lines = debugPreProcessor('../data/formsI-Z/r03-115.png')
 #image,x,lines = debugPreProcessor('../data/formsI-Z/p03-189.png')
 #image,x,lines = debugPreProcessor('../data/formsI-Z/m04-251.png')
-#image,x,lines = debugPreProcessor('../data/formsI-Z/p02-155.png')
 
-#cv2.imshow('',image)
+#image,x,lines = debugPreProcessor('../data/formsE-H/h02-037.png')
+#image,x,lines = debugPreProcessor('../data/formsI-Z/k01-051.png')
+#image,x,lines = debugPreProcessor('../data/formsI-Z/p02-155.png')
+#image,x,lines = debugPreProcessor('../data/formsI-Z/p02-109.png')
+
+cv2.imshow('',image)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
