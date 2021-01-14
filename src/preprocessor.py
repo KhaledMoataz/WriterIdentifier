@@ -143,7 +143,7 @@ def testPreProcessing():
 #image = preProcessor('../data/formsI-Z/p02-155.png')
 #image = preProcessor('../data/formsI-Z/p02-109.png')
 
-cv2.imshow('',image)
+#cv2.imshow('',image)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
