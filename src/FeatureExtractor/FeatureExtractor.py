@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from sklearn.preprocessing import normalize
 from sklearn.decomposition import PCA
+from skimage.feature import local_binary_pattern
 
 
 class FeatureExtractor:
@@ -99,7 +100,7 @@ class FeatureExtractor:
         :param data_features: All the data feature vectors.
         :return: Extracted features.
         """
-        pca = PCA(n_components=200)
+        pca = PCA(n_components=0.99)
         principal_components = pca.fit_transform(data_features)
         # TODO: return explained_variance_ratio_ as weights for each component
         return principal_components
@@ -111,5 +112,6 @@ class FeatureExtractor:
         :return: A feature vector representing the image.
         """
         srs_masks = self.get_srs_images(image)
+        # srs_masks = np.array([local_binary_pattern(image, 8, 1), local_binary_pattern(image, 8, 2), local_binary_pattern(image, 8, 3), local_binary_pattern(image, 8, 4)])
         feature_vector = self.normalized_histograms(srs_masks)
         return feature_vector
