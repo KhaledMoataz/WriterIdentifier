@@ -59,10 +59,10 @@ def cropPargraph(image):
     if major == '3': img2, contours, hierarchy= cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     else: contours, hierarchy= cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    x_min = 1000001
-    x_max = -1
-    y_min = 100000
-    y_max = -1
+    x_min = image.shape[1]
+    x_max = 0
+    y_min = image.shape[0]
+    y_max = 0
     thin_width = 10
     thin_hight = 10
     for contour in contours:    
@@ -95,14 +95,11 @@ def cropPargraph(image):
 
 
 def preProcessor(path):
-    
-    gray = readImage(path)
-    
+    gray = readImage(path)    
     no_lines_image = betweenLines(gray)
-
     paragraph_image = cropPargraph(no_lines_image)
-
     return  paragraph_image
+
 
 def testPreProcessing():
     for i in range(1,10):
@@ -125,8 +122,14 @@ def testPreProcessing():
     image = debugPreProcessor('../data/10/test.png')
     cv2.imshow('10/test',image)
      
-            
+def testForms(directory):
+    for filename in os.listdir(directory):
+        image = preProcessor(directory+filename)
+
 #testPreProcessing()
+#testForms('../data/formsA-D/')
+#testForms('../data/formsE-H/')
+#testForms('../data/formsI-Z/')
 
 #image = preProcessor('../data/formsA-D/a03-089.png')
 #image = preProcessor('../data/formsA-D/d06-063.png')
