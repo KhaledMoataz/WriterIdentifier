@@ -29,6 +29,7 @@ def betweenLines(gray):
     if major == '3': img2, contours, hierarchy= cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     else: contours, hierarchy= cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+    #lines = 0
     y_min = 0
     y_max = gray.shape[0]
     for contour in contours:    
@@ -36,11 +37,14 @@ def betweenLines(gray):
         if(w < gray.shape[1]/2):
             continue
         #print(y)
+        #lines = lines + 1
         if(y > gray.shape[0]/2 and y < y_max):
             y_max = y
         elif(y < gray.shape[0]/2 and y > y_min):
             y_min = y
-            
+    
+    #if(lines != 3):
+    #    print("Number of lines in preprocessor = %d"%lines)        
     #print(x_min,x_max,y_min,y_max)
     no_lines_image = gray[y_min:y_max,:]
     #print(x_min,x_max,y_min,y_max)
