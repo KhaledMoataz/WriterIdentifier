@@ -34,7 +34,7 @@ def generate_random_testcase(writers_list):
 
     pca_features = feature_extractor.apply_pca(features_list)
     classifier = Classifier()
-    label_list = [0, 0, 1, 1, 2, 2]
+    labels_list = [0, 0, 1, 1, 2, 2]
     classifier.train(pca_features[1:], label_list)
     calssification_result = classifier.classify([pca_features[0]])
     return calssification_result == test_truth
