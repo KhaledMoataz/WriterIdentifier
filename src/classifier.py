@@ -1,6 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import preprocessing
 
+
 class Classifier:
     def __init__(self, k=1):
         self.model = KNeighborsClassifier(n_neighbors=k)

@@ -1,57 +1,53 @@
+#!/usr/bin/env python3
+
 from FeatureExtractor import FeatureExtractor
 from classifier import Classifier
 from Utils import utils
-import numpy as np
-import cv2
-import timeit
+from preprocessor import preProcessor
 
 
-#from matplotlib import pyplot as plt
-path = "../data/06"
-img1 = utils.read_image(path + "/1/1.png")
-img1_ = utils.read_image(path + "/1/2.png")
+def generate_random_testcase(writers_list):
+    writers, _ = utils.get_random_indices(writers_list, 3)
+    train_images = []
+    test_image = None
+    test_truth = None
+    got_test = False
+    for idx in range(len(writers)):
+        images, valid = utils.get_random_indices(writers_list[writers[idx]], 2 + (1 - got_test))
+        if valid and not got_test:
+            got_test = True
+            test_image = writers_list[writers[idx]][images[2]]
+            test_truth = idx
+            images.pop()
+        for img_idx in images:
+            train_images.append(writers_list[writers[idx]][img_idx])
+    if test_image is None:
+        return -1
+    for idx in range(len(train_images)):
+        path = "../data/forms/{}.png".format(train_images[idx])
+        train_images[idx] = preProcessor(path)
 
-img2 = utils.read_image(path + "/2/1.png")
-img2_ = utils.read_image(path + "/2/2.png")
+    feature_extractor = FeatureExtractor.FeatureExtractor(2)
+    features_list = feature_extractor.extract_features(test_image)
+    for image in range(train_images):
+        features_list.append(feature_extractor.extract_features(image), axis=0)
 
-img3 = utils.read_image(path + "/3/1.png")
-img3_ = utils.read_image(path + "/3/2.png")
+    pca_features = feature_extractor.apply_pca(features_list)
+    classifier = Classifier()
+    label_list = [0, 0, 1, 1, 2, 2]
+    classifier.train(pca_features[1:], label_list)
+    calssification_result = classifier.classify([pca_features[0]])
+    return calssification_result == test_truth
 
-test_img = utils.read_image(path + "/test.png")
 
-
-# cv2.imshow('Original Image', img)
-feature_extractor = FeatureExtractor.FeatureExtractor(5)
-features = feature_extractor.extract_features(img1)
-# print(features.shape)
-features = np.append(features, feature_extractor.extract_features(img1_), axis=0)
-features = np.append(features, feature_extractor.extract_features(img2), axis=0)
-features = np.append(features, feature_extractor.extract_features(img2_), axis=0)
-features = np.append(features, feature_extractor.extract_features(img3), axis=0)
-features = np.append(features, feature_extractor.extract_features(img3_), axis=0)
-
-features = np.append(features, feature_extractor.extract_features(test_img), axis=0)
-print(type(features))
-print(features.shape)
-print(features)
-features = feature_extractor.apply_pca(features)
-print(type(features))
-print(features.shape)
-print(features)
-
-classifier = Classifier()
-classifier.train(features[:-1], [1, 1, 2, 2, 3, 3])
-print(classifier.classify([features[-1]]))
-#
-# start = timeit.default_timer()
-# srs_masks = feature_extractor.get_srs_images(img)
-# stop = timeit.default_timer()
-#
-# print('Time: ', stop - start)
-# utils.show_images(srs_masks)
-#
-# cv2.destroyAllWindows()
-#
-#
-#
-#
+if __name__ == '__main__':
+    num_cases = 1
+    num_correct_predictions = 0
+    writers_list = utils.read_ascii()
+    for _ in range(num_cases):
+        ret = -1
+        while ret == -1:
+            ret = generate_random_testcase(writers_list)
+        num_correct_predictions += ret
+    print("Number of Cases: {}".format(num_cases))
+    print("Model Accuracy: {}%".format(100 * num_correct_predictions / num_cases))
