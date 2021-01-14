@@ -23,21 +23,28 @@ def generate_random_testcase(writers_list):
             train_images.append(writers_list[writers[idx]][img_idx])
     if not got_test:
         return -1
-    for idx in range(len(train_images)):
-        path = "../data/forms/{}.png".format(train_images[idx])
-        train_images[idx] = preProcessor(path)
+
+    processed_images = [preProcessor("../data/forms/{}.png".format(test_image))]
+    for image_name in train_images:
+        path = "../data/forms/{}.png".format(image_name)
+        processed_images.append(preProcessor(path))
 
     feature_extractor = FeatureExtractor.FeatureExtractor(2)
-    features_list = feature_extractor.extract_features(test_image)
-    for image in train_images:
-        features_list.append(feature_extractor.extract_features(image), axis=0)
+    features_list = feature_extractor.extract_features(processed_images[0])
+    for idx in range(len(1, processed_images)):
+        features_list.append(feature_extractor.extract_features(processed_images[idx]), axis=0)
 
     pca_features = feature_extractor.apply_pca(features_list)
     classifier = Classifier()
     labels_list = [0, 0, 1, 1, 2, 2]
     classifier.train(pca_features[1:], labels_list)
-    calssification_result = classifier.classify([pca_features[0]])
-    return calssification_result == test_truth
+    classification_result = classifier.classify([pca_features[0]])
+    if classification_result != test_truth:
+        print("Train Images: ", train_images)
+        print("Test Image: ", test_image)
+        print("Test Truth: {}, Classification Result: {}".format(test_truth, classification_result))
+        return False
+    return True
 
 
 if __name__ == '__main__':
