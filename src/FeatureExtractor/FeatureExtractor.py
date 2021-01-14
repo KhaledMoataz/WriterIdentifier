@@ -1,5 +1,7 @@
 import numpy as np
 import cv2
+from sklearn.preprocessing import normalize
+from sklearn.decomposition import PCA
 
 
 class FeatureExtractor:
@@ -74,6 +76,31 @@ class FeatureExtractor:
             SRS_masks.append(mask)
         return SRS_masks
 
+    def normalized_histograms(self, SRS_masks):
+        """
+        Generates a histogram for each SRS-LBP mask and normalizes the histogram.
+        :param SRS_masks: The SRS-LBP features for an image.
+        :return: A feature vector representing the image.
+        """
+        histograms = []
+        for mask in SRS_masks:
+            hist,_ = np.histogram(mask, 256)
+            histograms = np.append(histograms, hist)
+        histograms = histograms.reshape(1, -1)  # reshape to 1xN matrix TODO: remove
+        normalized_histograms = normalize(histograms, norm='l1')
+        return normalized_histograms
+
+    def apply_PCA(self, data_features):
+        """
+        Principal Component Analysis.
+        :param data_features: All the data feature vectors.
+        :return: Extracted features.
+        """
+        pca = PCA(n_components=200)
+        principal_components = pca.fit_transform(data_features)
+        # TODO: return explained_variance_ratio_ as weights for each component
+        return principal_components
+
     def extractFeatures(self, image):
         """
         Generates a feature vector for a given image.
@@ -81,7 +108,5 @@ class FeatureExtractor:
         :return: A feature vector representing the image.
         """
         SRS_masks = self.getSRSImages(image)
-        # TODO: Compute histogram, apply L1 Normalization, .. etc.
-
-
-
+        feature_vector = self.normalized_histograms(SRS_masks)
+        return feature_vector
