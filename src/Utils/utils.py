@@ -31,6 +31,8 @@ def read_ascii(path="../data/ascii/forms.txt"):
             continue
 
         img_name, writer, a, b, c, d, e, f = line.split()
+        if img_name[0] == 'e':
+            break
         writer = int(writer)
         writers_list[writer].append(img_name)
 
@@ -48,5 +50,5 @@ def get_random_indices(original_list, number):
                 random_list.append(idx)
                 break
             if j > 10:
-                return random_list, False
-    return random_list, True
+                return random_list
+    return random_list

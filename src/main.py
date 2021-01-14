@@ -4,21 +4,27 @@ from FeatureExtractor import FeatureExtractor
 from classifier import Classifier
 from Utils import utils
 from preprocessor import preProcessor
+import numpy as np
 
 
 def generate_random_testcase(writers_list):
-    writers, _ = utils.get_random_indices(writers_list, 3)
+    writers = utils.get_random_indices(writers_list, 3)
+    if len(writers) < 3:
+        return -1
     train_images = []
     test_image = None
     test_truth = None
     got_test = False
     for idx in range(len(writers)):
-        images, valid = utils.get_random_indices(writers_list[writers[idx]], 2 + (1 - got_test))
-        if valid and not got_test:
+        images = utils.get_random_indices(writers_list[writers[idx]], 2 + (1 - got_test))
+        num = len(images)
+        if num == 3:
             got_test = True
             test_image = writers_list[writers[idx]][images[2]]
             test_truth = idx
             images.pop()
+        elif num < 2:
+            return -1
         for img_idx in images:
             train_images.append(writers_list[writers[idx]][img_idx])
     if not got_test:
@@ -31,12 +37,13 @@ def generate_random_testcase(writers_list):
 
     feature_extractor = FeatureExtractor.FeatureExtractor(2)
     features_list = feature_extractor.extract_features(processed_images[0])
-    for idx in range(len(1, processed_images)):
-        features_list.append(feature_extractor.extract_features(processed_images[idx]), axis=0)
+    for idx in range(1, len(processed_images)):
+        features_list = np.append(features_list, feature_extractor.extract_features(processed_images[idx]), axis=0)
 
     pca_features = feature_extractor.apply_pca(features_list)
     classifier = Classifier()
     labels_list = [0, 0, 1, 1, 2, 2]
+
     classifier.train(pca_features[1:], labels_list)
     classification_result = classifier.classify([pca_features[0]])
     if classification_result != test_truth:
@@ -48,7 +55,7 @@ def generate_random_testcase(writers_list):
 
 
 if __name__ == '__main__':
-    num_cases = 1
+    num_cases = 10
     num_correct_predictions = 0
     writers_list = utils.read_ascii()
     for _ in range(num_cases):

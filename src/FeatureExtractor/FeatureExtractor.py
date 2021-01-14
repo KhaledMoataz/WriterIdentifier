@@ -62,7 +62,7 @@ class FeatureExtractor:
             combined_image[:, i * image.shape[1]:(i + 1) * image.shape[1]] = abs_diff_images[:, :, i]
 
         threshold, thresholded_img = cv2.threshold(combined_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        print(threshold)
+
         for i in range(8):
             mask += np.array((abs_diff_images[:, :, i] >= threshold) * (1 << i), dtype=np.uint8)
             normal_mask += np.array((diff_images[:, :, i] >= 0) * (1 << i), dtype=np.uint8)
