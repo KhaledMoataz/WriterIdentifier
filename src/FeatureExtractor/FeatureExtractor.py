@@ -87,10 +87,10 @@ class FeatureExtractor:
         """
         histograms = []
         for mask in srs_masks:
-            hist,_ = np.histogram(mask, 256)
+            hist, _ = np.histogram(mask, 256)
             histograms = np.append(histograms, hist)
-        histograms = histograms.reshape(1, -1)  # reshape to 1xN matrix TODO: remove
-        normalized_histograms = normalize(histograms, norm='l1')
+        histograms = histograms.reshape(1, -1)  # reshape to 1xN matrix
+        normalized_histograms = normalize(histograms[:, 1:], norm='l1')
         return normalized_histograms
 
     @staticmethod
@@ -100,7 +100,7 @@ class FeatureExtractor:
         :param data_features: All the data feature vectors.
         :return: Extracted features.
         """
-        pca = PCA(n_components=0.99)
+        pca = PCA(n_components=0.99999)
         principal_components = pca.fit_transform(data_features)
         # TODO: return explained_variance_ratio_ as weights for each component
         return principal_components
@@ -112,6 +112,6 @@ class FeatureExtractor:
         :return: A feature vector representing the image.
         """
         srs_masks = self.get_srs_images(image)
-        # srs_masks = np.array([local_binary_pattern(image, 8, 1), local_binary_pattern(image, 8, 2), local_binary_pattern(image, 8, 3), local_binary_pattern(image, 8, 4)])
+        # srs_masks = np.array([local_binary_pattern(image, 8, 3)])
         feature_vector = self.normalized_histograms(srs_masks)
         return feature_vector
