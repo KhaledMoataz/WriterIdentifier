@@ -21,7 +21,7 @@ def generate_random_testcase(writers_list):
             images.pop()
         for img_idx in images:
             train_images.append(writers_list[writers[idx]][img_idx])
-    if test_image is None:
+    if not got_test:
         return -1
     for idx in range(len(train_images)):
         path = "../data/forms/{}.png".format(train_images[idx])
@@ -29,7 +29,7 @@ def generate_random_testcase(writers_list):
 
     feature_extractor = FeatureExtractor.FeatureExtractor(2)
     features_list = feature_extractor.extract_features(test_image)
-    for image in range(train_images):
+    for image in train_images:
         features_list.append(feature_extractor.extract_features(image), axis=0)
 
     pca_features = feature_extractor.apply_pca(features_list)
