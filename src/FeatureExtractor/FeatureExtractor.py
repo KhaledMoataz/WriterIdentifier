@@ -5,14 +5,15 @@ from sklearn.decomposition import PCA
 
 
 class FeatureExtractor:
-    def __init__(self, maxRadius):
+    def __init__(self, num_radii):
         """
         Initializes the feature extractor with max number of radii
-        :param maxRadius: Number of radii to take consider while generating SRS-LBP
+        :param num_radii: Number of radii to consider while generating SRS-LBP
         """
-        self.R = maxRadius
+        self.radii = num_radii
 
-    def getLBP(self, image, radius):
+    @staticmethod
+    def get_lbp(image, radius):
         """
         Generates normal LBP and SRS-LBP for a certain radius
         :param image: The image to compute LBP for.
@@ -64,33 +65,35 @@ class FeatureExtractor:
             normal_mask += np.array((diff_images[:, :, i] >= 0) * (1 << i), dtype=np.uint8)
         return normal_mask, mask
 
-    def getSRSImages(self, image):
+    def get_srs_images(self, image):
         """
         Generates SRS-LBP Images for radii from 1 to maxRadius
         :param image: The image to generate SRS-LBP for.
         :return: Array of SRS-LBP Images with different radii
         """
-        SRS_masks = []
-        for i in range(1, self.R+1):
-            _, mask = self.getLBP(image, i)
-            SRS_masks.append(mask)
-        return SRS_masks
+        srs_masks = []
+        for i in range(1, self.radii + 1):
+            _, mask = self.get_lbp(image, i)
+            srs_masks.append(mask)
+        return srs_masks
 
-    def normalized_histograms(self, SRS_masks):
+    @staticmethod
+    def normalized_histograms(srs_masks):
         """
         Generates a histogram for each SRS-LBP mask and normalizes the histogram.
-        :param SRS_masks: The SRS-LBP features for an image.
+        :param srs_masks: The SRS-LBP features for an image.
         :return: A feature vector representing the image.
         """
         histograms = []
-        for mask in SRS_masks:
+        for mask in srs_masks:
             hist,_ = np.histogram(mask, 256)
             histograms = np.append(histograms, hist)
         histograms = histograms.reshape(1, -1)  # reshape to 1xN matrix TODO: remove
         normalized_histograms = normalize(histograms, norm='l1')
         return normalized_histograms
 
-    def apply_PCA(self, data_features):
+    @staticmethod
+    def apply_pca(data_features):
         """
         Principal Component Analysis.
         :param data_features: All the data feature vectors.
@@ -101,12 +104,12 @@ class FeatureExtractor:
         # TODO: return explained_variance_ratio_ as weights for each component
         return principal_components
 
-    def extractFeatures(self, image):
+    def extract_features(self, image):
         """
         Generates a feature vector for a given image.
         :param image: The image to extract features from.
         :return: A feature vector representing the image.
         """
-        SRS_masks = self.getSRSImages(image)
-        feature_vector = self.normalized_histograms(SRS_masks)
+        srs_masks = self.get_srs_images(image)
+        feature_vector = self.normalized_histograms(srs_masks)
         return feature_vector
