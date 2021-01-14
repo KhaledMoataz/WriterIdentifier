@@ -5,6 +5,7 @@ from classifier import Classifier
 from Utils import utils
 from preprocessor import preProcessor
 import numpy as np
+import timeit
 
 
 def generate_random_testcase(writers_list):
@@ -55,13 +56,18 @@ def generate_random_testcase(writers_list):
 
 
 if __name__ == '__main__':
-    num_cases = 10
+    num_cases = 100
     num_correct_predictions = 0
     writers_list = utils.read_ascii()
-    for _ in range(num_cases):
+    for case in range(num_cases):
         ret = -1
+        start = None
+        end = None
         while ret == -1:
+            start = timeit.default_timer()
             ret = generate_random_testcase(writers_list)
+            end = timeit.default_timer()
         num_correct_predictions += ret
+        print("Case: {}, Result: {}, Time:{}".format(case + 1, ret, end - start))
     print("Number of Cases: {}".format(num_cases))
     print("Model Accuracy: {}%".format(100 * num_correct_predictions / num_cases))
