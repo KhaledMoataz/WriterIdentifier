@@ -7,9 +7,9 @@ import timeit
 import preprocessor
 import random
 
-random.seed(0)
+random.seed(20)
 
-feature_extractor = FeatureExtractor.FeatureExtractor(5)
+feature_extractor = FeatureExtractor.FeatureExtractor(7)
 classifier = Classifier(1)
 
 
@@ -21,6 +21,7 @@ def read_ascii(path):
             continue
         img_name, writer, a, b, c, d, e, f = line.split()
         dataset[int(writer)].append(img_name)
+    dataset = [writer_dataset for writer_dataset in dataset if len(writer_dataset) >= 2]
     return dataset
 
 
@@ -46,12 +47,21 @@ while test_count < 100:
     test_labels = []
     for writer in writers:
         pages_count = len(dataset[writer])
-        train_images_count = min(2, pages_count)
-        train_images += dataset[writer][:train_images_count]
-        train_labels += [writer] * train_images_count
-        writer_test_paths = dataset[writer][2:]
-        test_images += writer_test_paths
-        test_labels += [writer] * len(writer_test_paths)
+        writer_pages = range(0, pages_count)
+        pages = random.sample(writer_pages, 2)
+        train_images += [dataset[writer][pages[0]], dataset[writer][pages[1]]]
+        train_labels += [writer] * 2
+        writer_pages = set(writer_pages) - set(pages)
+        for page in writer_pages:
+            test_images.append(dataset[writer][page])
+        test_labels += [writer] * len(writer_pages)
+        # pages_count = len(dataset[writer])
+        # train_images_count = min(2, pages_count)
+        # train_images += dataset[writer][:train_images_count]
+        # train_labels += [writer] * train_images_count
+        # writer_test_paths = dataset[writer][2:]
+        # test_images += writer_test_paths
+        # test_labels += [writer] * len(writer_test_paths)
     if len(test_labels) == 0:
         continue
     cases_count += 1
@@ -63,7 +73,7 @@ while test_count < 100:
         features = np.append(features, extract_features("{}/{}.png".format(base, image)), axis=0)
     test_images_count = len(test_images)
 
-    features = feature_extractor.apply_pca(features)
+    # features = feature_extractor.apply_pca(features)
     classifier.clear()
     classifier.train(features[:-test_images_count], train_labels)
     predicted = classifier.classify(features[-test_images_count:])
@@ -81,8 +91,8 @@ print("Tests count: ", test_count)
 print("Passed count: ", passed_count)
 print(passed_count / test_count * 100)
 
-# for i in range(10, 11):
-#     path = "../data/" + str(i)
+# for i in range(1, 10):
+#     path = "../data/0" + str(i)
 #     features = extract_features(path + "/1/1.png")
 #     features = np.append(features, extract_features(path + "/1/2.png"), axis=0)
 #     features = np.append(features, extract_features(path + "/2/1.png"), axis=0)
@@ -92,13 +102,13 @@ print(passed_count / test_count * 100)
 #     features = np.append(features, extract_features(path + "/test.png"), axis=0)
 #
 #     # cv2.imshow('Original Image', img)
-#     print(type(features))
-#     print(features.shape)
-#     print(features)
+#     # print(type(features))
+#     # print(features.shape)
+#     # print(features)
 #     features = feature_extractor.apply_pca(features)
-#     print(type(features))
-#     print(features.shape)
-#     print(features)
+#     # print(type(features))
+#     # print(features.shape)
+#     # print(features)
 #
 #     classifier = Classifier(3)
 #     classifier.train(features[:-1], [1, 1, 2, 2, 3, 3])

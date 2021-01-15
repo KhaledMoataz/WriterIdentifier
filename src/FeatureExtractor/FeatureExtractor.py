@@ -89,8 +89,9 @@ class FeatureExtractor:
         for mask in srs_masks:
             hist, _ = np.histogram(mask, 256)
             histograms = np.append(histograms, hist)
-        histograms = histograms.reshape(1, -1)  # reshape to 1xN matrix
-        normalized_histograms = normalize(histograms[:, 1:], norm='l1')
+        histograms = histograms.reshape(1, -1)[:, 1:]  # reshape to 1xN matrix
+        # return histograms
+        normalized_histograms = normalize(histograms, norm='l2')
         return normalized_histograms
 
     @staticmethod
@@ -113,5 +114,6 @@ class FeatureExtractor:
         """
         srs_masks = self.get_srs_images(image)
         # srs_masks = np.array([local_binary_pattern(image, 8, 3)])
+        # srs_masks = np.array([self.get_lbp(image, 3)[0]])
         feature_vector = self.normalized_histograms(srs_masks)
         return feature_vector
