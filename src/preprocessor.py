@@ -3,23 +3,6 @@ import math
 import numpy as np
 import os
 
-def readImage(path):
-    # Load an color image in grayscale
-    img = cv2.imread(path)
-    # Reduce the image size 
-    scale_percent = 20 # percent of original size
-    width = int(img.shape[1] * scale_percent / 100)
-    height = int(img.shape[0] * scale_percent / 100)
-    dim = (width, height)
-    # resize image
-    resized = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-    # convert the image to gray scale
-    gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-    #cv2.imshow('gray',gray)
-    
-    return gray
-
-
 def betweenLines(gray):
     gray2 = 255 - gray
     ret, bin_img = cv2.threshold(gray2,40,255,cv2.THRESH_BINARY)
@@ -98,11 +81,11 @@ def cropPargraph(image):
     return paragraph_image
 
 
-def preProcessor(path):
-    gray = readImage(path)    
-    no_lines_image = betweenLines(gray)
+def preProcessor(img):
+    no_lines_image = betweenLines(img)
     paragraph_image = cropPargraph(no_lines_image)
     return  paragraph_image
+    # return no_lines_image
 
 
 def testPreProcessing():
