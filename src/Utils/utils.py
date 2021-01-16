@@ -1,7 +1,7 @@
 import cv2
 
 
-def read_image(path, scale=30):
+def read_image(path, scale=15):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     # Reduce the image size
     width = int(img.shape[1] * scale / 100)

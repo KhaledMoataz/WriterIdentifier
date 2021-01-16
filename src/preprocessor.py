@@ -84,7 +84,9 @@ def cropPargraph(image):
 def preProcessor(img):
     no_lines_image = betweenLines(img)
     paragraph_image = cropPargraph(no_lines_image)
-    return  paragraph_image
+    threshold, _ = cv2.threshold(paragraph_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    paragraph_image[paragraph_image > threshold] = 255
+    return paragraph_image[5:-5, 5:-5]
     # return no_lines_image
 
 

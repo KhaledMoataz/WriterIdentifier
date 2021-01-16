@@ -28,9 +28,7 @@ class FeatureExtractor:
                             constant_values=((255, 255), (255, 255)))
         combined_image = np.zeros((image.shape[0], image.shape[1] * 8), dtype=np.uint8)
         abs_diff_images = np.zeros((image.shape[0], image.shape[1], 8), dtype=np.uint8)
-        diff_images = np.zeros((image.shape[0], image.shape[1], 8), dtype=np.int16)
         mask = np.zeros(image.shape, dtype=np.uint8)
-        normal_mask = np.zeros(image.shape, dtype=np.uint8)
 
         for i in range(8):
             lx = 0
@@ -55,7 +53,6 @@ class FeatureExtractor:
 
             transformed_img = padded_img[lx:rx, ly:ry]
             diff_img = np.array(transformed_img, dtype=np.int16) - np.array(image, dtype=np.int16)
-            diff_images[:, :, i] = diff_img
             abs_diff_images[:, :, i] = np.array(np.abs(diff_img), dtype=np.uint8)
             combined_image[:, i * image.shape[1]:(i + 1) * image.shape[1]] = abs_diff_images[:, :, i]
 
@@ -63,8 +60,7 @@ class FeatureExtractor:
         # print(threshold)
         for i in range(8):
             mask += np.array((abs_diff_images[:, :, i] >= threshold) * (1 << i), dtype=np.uint8)
-            normal_mask += np.array((diff_images[:, :, i] >= 0) * (1 << i), dtype=np.uint8)
-        return normal_mask, mask
+        return mask
 
     def get_srs_images(self, image):
         """
@@ -74,7 +70,7 @@ class FeatureExtractor:
         """
         srs_masks = []
         for i in range(1, self.radii + 1):
-            _, mask = self.get_lbp(image, i)
+            mask = self.get_lbp(image, i)
             srs_masks.append(mask)
         return srs_masks
 
