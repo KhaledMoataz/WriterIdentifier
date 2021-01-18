@@ -86,9 +86,9 @@ class FeatureExtractor:
             hist, _ = np.histogram(mask, 256)
             histograms = np.append(histograms, hist[1:])
         histograms = histograms.reshape(1, -1)  # reshape to 1xN matrix
-        # return histograms
-        normalized_histograms = normalize(histograms, norm='l2')
-        return normalized_histograms
+        return histograms
+        # normalized_histograms = normalize(histograms, norm='l2')
+        # return normalized_histograms
 
     @staticmethod
     def apply_pca(data_features):

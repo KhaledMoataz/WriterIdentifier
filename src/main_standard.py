@@ -31,23 +31,10 @@ for test_case_number in range(1, 11):
     classifier.clear()
     classifier.train(features[1:], LABELS)
     predicted = classifier.classify(features[0:1])[0]
-    execution_time = timeit.default_timer() - start_time
+    execution_time = round(timeit.default_timer() - start_time, 2)
     prediction_file.write(str(predicted) + '\n')
     time_file.write(str(execution_time) + '\n')
-    print(predicted)
-    print(execution_time)
 prediction_file.close()
 time_file.close()
 
-# train_images_names = ['b01-053', 'b01-049', 'g07-044', 'g07-047', 'h01-007', 'h01-000']
-# test_image_name = 'g07-038'
-# train_images_names = ['p06-042', 'p06-047', 'f02-033', 'f02-017', 'g06-018r', 'g06-042r']
-# test_image_name = 'p06-096'
-# train_images = [preprocessor.preProcessor(utils.read_image("../../forms/" + image_name + ".png")) for image_name in train_images_names]
-# test_image = preprocessor.preProcessor(utils.read_image("../../forms/" + test_image_name + ".png"))
-# features = feature_extractor.extract_features(test_image)
-# for image in train_images:
-#     features = np.append(features, feature_extractor.extract_features(image), axis=0)
-# classifier.clear()
-# classifier.train(features[1:], LABELS)
-# print(classifier.classify(features[0:1])[0])
+
