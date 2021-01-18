@@ -17,7 +17,6 @@ test_image = preprocessor.preProcessor(utils.read_image("../../forms/" + test_im
 features = feature_extractor.extract_features(test_image)
 for image in train_images:
     features = np.append(features, feature_extractor.extract_features(image), axis=0)
-features = feature_extractor.apply_pca(features)
 classifier.clear()
 classifier.train(features[1:], LABELS)
 print(classifier.classify(features[0:1])[0])
