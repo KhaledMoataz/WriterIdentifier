@@ -9,7 +9,7 @@ time_file = open("time.txt", "w")
 
 LABELS = [1, 1, 2, 2, 3, 3]
 
-feature_extractor = FeatureExtractor.FeatureExtractor(4)
+feature_extractor = FeatureExtractor.FeatureExtractor(6)
 classifier = Classifier()
 
 for test_case_number in range(1, 11):

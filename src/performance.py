@@ -2,12 +2,13 @@ from FeatureExtractor import FeatureExtractor
 from classifier import Classifier
 from Utils import utils
 import numpy as np
-import cv2
 import timeit
 import preprocessor
 import random
 
-random.seed(30)
+# TESTING = True
+
+random.seed(0)
 
 feature_extractor = FeatureExtractor.FeatureExtractor(6)
 classifier = Classifier()
@@ -28,6 +29,10 @@ def read_ascii(path):
         img_name, writer, a, b, c, d, e, f = line.split()
         dataset[int(writer)].append(img_name)
     dataset = [writer_dataset for writer_dataset in dataset if len(writer_dataset) >= 2]
+    # if not TESTING:
+    #     dataset = dataset[0:int(0.8 * len(dataset))]
+    # else:
+    #     dataset = dataset[int(0.8 * len(dataset)):]
     print(len(dataset))
     return dataset
 
@@ -55,7 +60,7 @@ cases_count = 0
 test_count = 0
 passed_count = 0
 
-while test_count < 2000:
+while test_count < 1000:
     writers = random.sample(range(0, len(dataset)), 3)
     train_images_names = []
     train_images = []

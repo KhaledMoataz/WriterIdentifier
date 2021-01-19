@@ -11,9 +11,8 @@ class Classifier:
 
     def __normalize(self, features):
         eps = 1e-7
-        features /= features.sum() + eps
-        features = np.sqrt(features)
-        return self.normalizer.transform(features)
+        features /= features.sum(axis=1)[:, None] + eps
+        return np.sqrt(features)
 
     def train(self, features, labels):
         self.model.fit(self.__normalize(features), labels)
