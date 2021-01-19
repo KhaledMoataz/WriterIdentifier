@@ -15,7 +15,7 @@ incidental factors.
 Proposed Method
 ===============
 
-The pipeline, shown in the following figure, shows the main modules that the data goes through
+The pipeline, shown in the figure below, shows the main modules that the data goes through
 before making a decision: Preprocessing, Feature Extraction and
 Classification.
 
@@ -46,10 +46,11 @@ Experimental Results
 ====================
 We analyzed the performance of our algorithm based on IAM dataset.  We worked with complete form text only. 
 
-Each iteration, three different randomwriters are chosen from the set.  For each writer, two random pages are chosen for training and theothers are used for testing.
+Each iteration, three different randomwriters are chosen from the set.  For each writer, two random pages are chosen for training and the others are used for testing.
 
 ![Results Table](https://user-images.githubusercontent.com/32196766/105080743-edbcc680-5a99-11eb-8d2a-8d300c5196d2.png)
 
+Further info can be found [here.](https://github.com/KhaledMoataz/WriterIdentifier/blob/main/Writer_Identifier.pdf)
 
 References
 ==========
